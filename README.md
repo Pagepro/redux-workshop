@@ -22,18 +22,18 @@ How to add redux dev tools to the project.
 
 ### Steps you have to do before you can attend to the workshops
 
-Clone the repo that will be used on the workshops to your computer.
+Clone the repo that will be used on the workshops to your computer.  
 `git clone git@github.com:Pagepro/redux-workshop.git`
 
-Open directory with your fresh repository and install all dependendcies.
+Open directory with your fresh repository and install all dependendcies.  
 `npm install` || `yarn`
 
-Run the project
+Run the project  
 `npm start` || `yarn start`
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 Add your name somewhere to the landing page with start button. 
 ![Example](src/images/App.png)
-Printscreen the webpage to proof that everything is working on your machine. And this screen to your request.
+Printscreen the webpage to proof that everything is working on your machine. Add this screen to your request.
 ## Thank You
