@@ -1,3 +1,5 @@
+[![pagepro_logo](https://raw.githubusercontent.com/Pagepro/frontend-recruitment-task-landing-page/master/logo.svg?sanitize=true)](https://pagepro.co/)
+
 # React + Redux workshop
 On this workshop we will update the existing react app into react+redux app. 
 
