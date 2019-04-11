@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import {
   Link
 } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { setGameStarted } from './reducer'
 
 const Home = props => {
   return (
@@ -23,4 +25,10 @@ Home.propTypes = {
   setGameStarted: PropTypes.func
 }
 
-export default Home
+const mapDispatchToProps = dispatch => ({
+  setGameStarted: () => {
+    dispatch(setGameStarted)
+  }
+})
+
+export default connect(null, mapDispatchToProps)(Home)
