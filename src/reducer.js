@@ -8,6 +8,8 @@ const reducer = (state, action) => {
         ...state,
         ...payload
       }
+    default:
+      return state
   }
 }
 
