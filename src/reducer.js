@@ -11,7 +11,11 @@ import {
   RESET_GAME,
   GET_QUESTIONS,
   SET_GOOD_ANSWER,
-  SET_BAD_ANSWER
+  SET_BAD_ANSWER,
+  USE_SPECTATORS_LINE,
+  USE_CALL_FRIEND_LINE,
+  USE_HALF_ON_HALF_LINE,
+  SET_CURRENT_QUESTION_ANSWERS
 } from './actionTypes'
 
 const mainDefaultState = {
@@ -27,7 +31,10 @@ const gameReducerDefaultState = {
   currentQuestion: {},
   answers: [],
   currentQuestionNumber: 0,
-  answer: {}
+  answer: {},
+  callFriendUsed: false,
+  spectatorsUsed: false,
+  halfOnHalfUsed: false
 }
 
 const mainReducer = (state = mainDefaultState, action) => {
@@ -61,13 +68,38 @@ const gameReducer = (state = gameReducerDefaultState, action) => {
     case GET_QUESTIONS: {
       return {
         ...state,
-        questions: payload
+        questions: payload,
+        currentQuestion: payload[state.currentQuestionNumber]
       }
     }
     case SET_GOOD_ANSWER:
       return {
         ...state,
-        currentQuestionNumber: state.currentQuestionNumber++
+        currentQuestionNumber: ++state.currentQuestionNumber,
+        currentQuestion: state.questions[state.currentQuestionNumber++]
+      }
+    case USE_SPECTATORS_LINE:
+      return {
+        ...state,
+        spectatorsUsed: true
+      }
+    case USE_CALL_FRIEND_LINE:
+      return {
+        ...state,
+        callFriendUsed: true
+      }
+    case USE_HALF_ON_HALF_LINE:
+      return {
+        ...state,
+        halfOnHalfUsed: true
+      }
+    case SET_CURRENT_QUESTION_ANSWERS:
+      return {
+        ...state,
+        currentQuestion: {
+          ...state.currentQuestion,
+          answers: payload
+        }
       }
     default:
       return state

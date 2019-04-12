@@ -3,6 +3,13 @@ import PropTypes from 'prop-types'
 import {
   sample
 } from 'lodash'
+import {
+  useSpectatorsLine,
+  useCallFriendLine,
+  useHalfOnHalfLine,
+  setCurrentQuestionAnswers
+} from './actions'
+import { connect } from 'react-redux'
 
 class LifeLines extends React.Component {
   constructor (props) {
@@ -22,46 +29,29 @@ class LifeLines extends React.Component {
   useSpectatorsLine () {
     window.alert(`Spectators: ${this.props.correctAnswer}`)
 
-    this.setState({
-      spectatorsUsed: true
-    })
+    this.props.useSpectatorsLine()
   }
 
   useCallFriendLine () {
     window.alert(`Friend: ${this.props.correctAnswer}`)
 
-    this.setState({
-      callFriendUsed: true
-    })
+    this.props.useCallFriendLine()
   }
 
   useHalfOnHalfLine () {
     const {
-      correctAnswer,
       setCurrentQuestionAnswers,
-      answers
+      currentQuestion
     } = this.props
+
     const leftoverIncorrectAnswer = sample(
-      answers
-        .filter(answer => answer.text !== correctAnswer)
+      currentQuestion.answers
+        .filter(answer => answer !== currentQuestion.correctAnswer)
       )
 
-    const filteredAnswers = answers.reduce((result, answer) => {
-      if (answer.text !== leftoverIncorrectAnswer.text && answer.text !== correctAnswer) {
-        answer.disabled = true
-      }
+    setCurrentQuestionAnswers([currentQuestion.correctAnswer, leftoverIncorrectAnswer])
 
-      return [
-        ...result,
-        answer
-      ]
-    }, [])
-
-    setCurrentQuestionAnswers(filteredAnswers)
-
-    this.setState({
-      halfOnHalfUsed: true
-    })
+    this.props.useHalfOnHalfLine()
   }
 
   render () {
@@ -104,4 +94,16 @@ LifeLines.propTypes = {
   onChange: PropTypes.func
 }
 
-export default LifeLines
+const mapStateToProps = state => ({
+  callFriendUsed: state.game.callFriendUsed,
+  spectatorsUsed: state.game.spectatorsUsed,
+  halfOnHalfUsed: state.game.halfOnHalfUsed,
+  currentQuestion: state.game.currentQuestion
+})
+
+export default connect(mapStateToProps, {
+  useSpectatorsLine,
+  useCallFriendLine,
+  useHalfOnHalfLine,
+  setCurrentQuestionAnswers
+})(LifeLines)

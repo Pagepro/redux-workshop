@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import {
   getGuaranteedReward
 } from './helpers'
+import { connect } from 'react-redux'
+import { resetGame } from './actions'
 
 const EndScreen = props => {
   const {
@@ -36,4 +38,9 @@ EndScreen.propTypes = {
   resetGame: PropTypes.func
 }
 
-export default EndScreen
+const mapStateToProps = state => ({
+  hasWon: state.global.hasWon,
+  currentQuestionNumber: state.game.currentQuestionNumber
+})
+
+export default connect(mapStateToProps, { resetGame })(EndScreen)

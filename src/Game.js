@@ -7,25 +7,14 @@ import EndScreen from './EndScreen'
 import { connect } from 'react-redux'
 import {
   resetGame,
-  getQuestions,
-  setAnswer
+  getQuestions
 } from './actions'
 
 class Game extends Component {
   constructor (props) {
     super(props)
 
-    // TODO REMOVE AFTER
-    this.state = {
-      questions: [],
-      currentQuestion: {},
-      answers: [],
-      currentQuestionNumber: 0,
-      answer: {}
-    }
-
     this.resetGame = this.resetGame.bind(this)
-    this.setCurrentAnswer = this.setCurrentAnswer.bind(this)
   }
 
   componentDidMount () {
@@ -42,21 +31,8 @@ class Game extends Component {
       history.replace('/')
       return
     }
+
     this.props.getQuestions()
-  }
-
-  setCurrentAnswer (answer) {
-    return () => {
-      const {
-        questions,
-        currentQuestionNumber,
-        setAnswer
-      } = this.props
-
-      const currentQuestion = questions[currentQuestionNumber]
-
-      return answer !== currentQuestion.answer ? setAnswer(false) : setAnswer(true)
-    }
   }
 
   async resetGame () {
@@ -67,50 +43,25 @@ class Game extends Component {
   render () {
     const {
       questions,
-      currentQuestionNumber
+      isGameFinished
     } = this.props
 
     if (!questions.length) {
       return null
     }
 
-    const {
-      question,
-      correctAnswer,
-      answers
-    } = questions[currentQuestionNumber]
-
-    const {
-      isGameFinished,
-      hasWon
-    } = this.state
-
     return isGameFinished
       ? (
-        <EndScreen
-          resetGame={this.resetGame}
-          hasWon={hasWon}
-          currentQuestionNumber={currentQuestionNumber}
-        />
+        <EndScreen />
       )
       : (
         <div className='l-game'>
           <Background>
             <div className='c-questions'>
-              <Questions
-                question={question}
-                answers={answers}
-                correctAnswer={correctAnswer}
-                onSelect={this.setCurrentAnswer}
-              />
+              <Questions />
             </div>
           </Background>
-          <SidePanel
-            currentQuestionNumber={currentQuestionNumber}
-            correctAnswer={correctAnswer}
-            answers={answers}
-            setCurrentQuestionAnswers={this.setCurrentAnswer}
-          />
+          <SidePanel />
         </div>
       )
   }
@@ -125,12 +76,10 @@ Game.propTypes = {
 const mapStateToProps = state => ({
   appSettings: state.global,
   questions: state.game.questions,
-  currentQuestionNumber: state.game.currentQuestionNumber
-
+  isGameFinished: state.global.isGameFinished
 })
 
 export default connect(mapStateToProps, {
   resetGame,
-  getQuestions,
-  setAnswer
+  getQuestions
 })(Game)

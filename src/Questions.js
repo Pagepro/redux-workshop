@@ -1,22 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setAnswer } from './actions'
 
 class Questions extends React.Component {
   constructor (props) {
     super(props)
 
     this.renderItem = this.renderItem.bind(this)
+    this.setCurrentAnswer = this.setCurrentAnswer.bind(this)
+  }
+
+  setCurrentAnswer (answer) {
+    return () => {
+      const {
+        currentQuestion,
+        setAnswer
+      } = this.props
+
+      return answer !== currentQuestion.correctAnswer ? setAnswer(false) : setAnswer(true)
+    }
   }
 
   renderItem (item, index) {
-    const {
-      onSelect
-    } = this.props
     return (
       <li
         key={`${index}-answer`}
         className={`c-question ${item.disabled ? 'is-disabled' : ''}`}
-        onClick={item.disabled ? null : onSelect(item)}
+        onClick={item.disabled ? null : this.setCurrentAnswer(item)}
       >
         <span className='c-question__label'>
           {String.fromCharCode(65 + index)}: {item}
@@ -27,17 +38,16 @@ class Questions extends React.Component {
 
   render () {
     const {
-      answers,
-      question
+      currentQuestion
     } = this.props
 
     return (
       <div className='c-questions'>
         <p className='c-questions__title c-question'>
-          {question}
+          {currentQuestion.question}
         </p>
         <ul className='c-questions__list'>
-          {answers.map(this.renderItem)}
+          {currentQuestion.answers.map(this.renderItem)}
         </ul>
       </div>
     )
@@ -49,7 +59,14 @@ Questions.propTypes = {
   question: PropTypes.string,
   answer: PropTypes.object,
   onSelect: PropTypes.func,
+  setAnswer: PropTypes.func,
   correctAnswer: PropTypes.string
 }
 
-export default Questions
+const mapStateToProps = state => ({
+  currentQuestion: state.game.currentQuestion
+})
+
+export default connect(mapStateToProps, {
+  setAnswer
+})(Questions)

@@ -4,7 +4,11 @@ import {
     RESET_GAME,
     GET_QUESTIONS,
     SET_GOOD_ANSWER,
-    SET_BAD_ANSWER
+    SET_BAD_ANSWER,
+    USE_SPECTATORS_LINE,
+    USE_HALF_ON_HALF_LINE,
+    USE_CALL_FRIEND_LINE,
+    SET_CURRENT_QUESTION_ANSWERS
 } from './actionTypes'
 import {
   fetchQuestions
@@ -36,6 +40,23 @@ import { shuffle } from 'lodash'
 
   const setBadAnswerAction = data => ({
     type: SET_BAD_ANSWER,
+    payload: data
+  })
+
+  const useSpectatorsLineAction = () => ({
+    type: USE_SPECTATORS_LINE
+  })
+
+  const useHalfOnHalfLineAction = () => ({
+    type: USE_HALF_ON_HALF_LINE
+  })
+
+  const useCallFriendLineAction = () => ({
+    type: USE_CALL_FRIEND_LINE
+  })
+
+  const setCurrentQuestionAnswersAction = data => ({
+    type: SET_CURRENT_QUESTION_ANSWERS,
     payload: data
   })
 
@@ -75,4 +96,20 @@ import { shuffle } from 'lodash'
     } else {
       dispatch(setBadAnswerAction())
     }
+  }
+
+  export const useSpectatorsLine = () => dispatch => {
+    dispatch(useSpectatorsLineAction())
+  }
+
+  export const useHalfOnHalfLine = () => dispatch => {
+    dispatch(useHalfOnHalfLineAction())
+  }
+
+  export const useCallFriendLine = () => dispatch => {
+    dispatch(useCallFriendLineAction())
+  }
+
+  export const setCurrentQuestionAnswers = data => dispatch => {
+    dispatch(setCurrentQuestionAnswersAction(data))
   }
