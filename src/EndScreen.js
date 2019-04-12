@@ -3,10 +3,8 @@ import PropTypes from 'prop-types'
 import {
   getGuaranteedReward
 } from './helpers'
-import { connect } from 'react-redux'
 
 const EndScreen = props => {
-  console.log(props)
   const {
     hasWon,
     currentQuestionNumber,
@@ -31,12 +29,6 @@ const EndScreen = props => {
     </div>
   )
 }
-
-const mapDispatchToProps = state => ({
-  resetGame: () => {
-
-  }
-})
 
 EndScreen.propTypes = {
   hasWon: PropTypes.bool,

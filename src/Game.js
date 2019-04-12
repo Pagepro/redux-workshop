@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  fetchQuestions
-} from './helpers'
 import Questions from './Questions'
 import Background from './Background'
 import SidePanel from './SidePanel'
-import { shuffle } from 'lodash'
 import EndScreen from './EndScreen'
 import { connect } from 'react-redux'
-import { resetGame } from './reducer'
+import {
+  resetGame,
+  getQuestions,
+  setAnswer
+} from './actions'
 
 class Game extends Component {
   constructor (props) {
     super(props)
 
+    // TODO REMOVE AFTER
     this.state = {
       questions: [],
       currentQuestion: {},
@@ -23,11 +24,8 @@ class Game extends Component {
       answer: {}
     }
 
-    this.fetchQuestions = this.fetchQuestions.bind(this)
-    this.generateQuestion = this.generateQuestion.bind(this)
-    this.setCurrentAnswer = this.setCurrentAnswer.bind(this)
     this.resetGame = this.resetGame.bind(this)
-    this.setCurrentQuestionAnswers = this.setCurrentQuestionAnswers.bind(this)
+    this.setCurrentAnswer = this.setCurrentAnswer.bind(this)
   }
 
   componentDidMount () {
@@ -44,83 +42,21 @@ class Game extends Component {
       history.replace('/')
       return
     }
-
-    this.fetchQuestions()
-  }
-
-  fetchQuestions () {
-    fetchQuestions(this.props.appSettings.difficulty)
-      .then(questions => {
-        this.setState({
-          questions
-        }, this.generateQuestion)
-      })
-  }
-
-  generateQuestion () {
-    const currentQuestion = this.state.questions[this.state.currentQuestionNumber]
-    const {
-      correctAnswer,
-      incorrectAnswers
-    } = currentQuestion
-
-    const answers = shuffle([correctAnswer, ...incorrectAnswers])
-      .map(answer => ({
-        text: answer,
-        disabled: false
-      }))
-
-    this.setState({
-      currentQuestion,
-      answers
-    })
+    this.props.getQuestions()
   }
 
   setCurrentAnswer (answer) {
     return () => {
-      this.setState({ answer }, this.confirmCheckedAnswer)
+      const {
+        questions,
+        currentQuestionNumber,
+        setAnswer
+      } = this.props
+
+      const currentQuestion = questions[currentQuestionNumber]
+
+      return answer !== currentQuestion.answer ? setAnswer(false) : setAnswer(true)
     }
-  }
-
-  confirmCheckedAnswer () {
-    const {
-      answer,
-      currentQuestion: {
-        correctAnswer
-      },
-      currentQuestionNumber
-    } = this.state
-
-    if (this.state.answer === '') {
-      return
-    }
-
-    if (answer.text === correctAnswer) {
-      if (currentQuestionNumber !== 11) {
-        this.setState(prevState => ({
-          currentQuestionNumber: prevState.currentQuestionNumber + 1,
-          answer: {}
-        }), this.generateQuestion)
-      } else {
-        this.setState({
-          isGameFinished: true,
-          hasWon: true
-        })
-      }
-    } else {
-      this.setState({
-        isGameFinished: true,
-        hasWon: false
-      })
-    }
-  }
-
-  setCurrentQuestionAnswers (answers) {
-    this.setState({
-      answers: [
-        ...answers
-      ]
-    })
   }
 
   async resetGame () {
@@ -130,14 +66,23 @@ class Game extends Component {
 
   render () {
     const {
-      currentQuestion: {
-        question,
-        correctAnswer
-      },
-      answers,
-      isGameFinished,
-      hasWon,
+      questions,
       currentQuestionNumber
+    } = this.props
+
+    if (!questions.length) {
+      return null
+    }
+
+    const {
+      question,
+      correctAnswer,
+      answers
+    } = questions[currentQuestionNumber]
+
+    const {
+      isGameFinished,
+      hasWon
     } = this.state
 
     return isGameFinished
@@ -164,7 +109,7 @@ class Game extends Component {
             currentQuestionNumber={currentQuestionNumber}
             correctAnswer={correctAnswer}
             answers={answers}
-            setCurrentQuestionAnswers={this.setCurrentQuestionAnswers}
+            setCurrentQuestionAnswers={this.setCurrentAnswer}
           />
         </div>
       )
@@ -178,13 +123,14 @@ Game.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  appSettings: state
+  appSettings: state.global,
+  questions: state.game.questions,
+  currentQuestionNumber: state.game.currentQuestionNumber
+
 })
 
-const mapDispatchToProps = dispatch => ({
-  resetGame: () => {
-    dispatch(resetGame)
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Game)
+export default connect(mapStateToProps, {
+  resetGame,
+  getQuestions,
+  setAnswer
+})(Game)

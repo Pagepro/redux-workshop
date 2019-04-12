@@ -19,7 +19,7 @@ class Questions extends React.Component {
         onClick={item.disabled ? null : onSelect(item)}
       >
         <span className='c-question__label'>
-          {String.fromCharCode(65 + index)}: {item.text}
+          {String.fromCharCode(65 + index)}: {item}
         </span>
       </li>
     )

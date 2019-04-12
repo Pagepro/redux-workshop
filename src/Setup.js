@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { SETUP_APP } from './actionTypes'
+import { setupApp } from './actions'
 
 class Setup extends Component {
   constructor (props) {
@@ -119,13 +119,7 @@ Setup.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  gameStarted: state.gameStarted
+  gameStarted: state.global.gameStarted
 })
 
-const mapDispatchToProps = dispatch => ({
-  setupApp: (nick, difficulty) => {
-    dispatch({ type: SETUP_APP, payload: { nick, difficulty } })
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Setup)
+export default connect(mapStateToProps, { setupApp })(Setup)

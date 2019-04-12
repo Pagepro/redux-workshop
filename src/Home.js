@@ -4,7 +4,7 @@ import {
   Link
 } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { setGameStarted } from './reducer'
+import { setGameStarted } from './actions'
 
 const Home = props => {
   return (
@@ -25,10 +25,4 @@ Home.propTypes = {
   setGameStarted: PropTypes.func
 }
 
-const mapDispatchToProps = dispatch => ({
-  setGameStarted: () => {
-    dispatch(setGameStarted)
-  }
-})
-
-export default connect(null, mapDispatchToProps)(Home)
+export default connect(null, { setGameStarted })(Home)
