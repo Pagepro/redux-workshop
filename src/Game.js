@@ -1,27 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  fetchQuestions
-} from './helpers'
 import Questions from './Questions'
 import Background from './Background'
 import SidePanel from './SidePanel'
-import { shuffle } from 'lodash'
 import EndScreen from './EndScreen'
+import { connect } from 'react-redux'
+import { resetGame, getQuestions } from './actions'
 
 class Game extends Component {
   constructor (props) {
     super(props)
 
-    this.state = {
-      questions: [],
-      currentQuestion: {},
-      answers: [],
-      currentQuestionNumber: 0,
-      answer: {}
-    }
-
-    this.fetchQuestions = this.fetchQuestions.bind(this)
     this.generateQuestion = this.generateQuestion.bind(this)
     this.setCurrentAnswer = this.setCurrentAnswer.bind(this)
     this.resetGame = this.resetGame.bind(this)
@@ -30,11 +19,9 @@ class Game extends Component {
 
   componentDidMount () {
     const {
-      appSettings: {
-        nick,
-        difficulty,
-        gameStarted
-      },
+      nick,
+      difficulty,
+      gameStarted,
       history
     } = this.props
 
@@ -42,42 +29,18 @@ class Game extends Component {
       history.replace('/')
       return
     }
-
-    this.fetchQuestions()
+    this.props.getQuestions()
   }
 
-  resetGame () {
-    this.props.resetGame(() => {
-      this.props.history.push('/')
-    })
-  }
-
-  fetchQuestions () {
-    fetchQuestions(this.props.appSettings.difficulty)
-      .then(questions => {
-        this.setState({
-          questions
-        }, this.generateQuestion)
-      })
+  async resetGame () {
+    await this.props.resetGame()
+    this.props.history.push('/')
   }
 
   generateQuestion () {
-    const currentQuestion = this.state.questions[this.state.currentQuestionNumber]
-    const {
-      correctAnswer,
-      incorrectAnswers
-    } = currentQuestion
+    const currentQuestion = this.props.questions[this.props.currentQuestionNumber]
 
-    const answers = shuffle([correctAnswer, ...incorrectAnswers])
-      .map(answer => ({
-        text: answer,
-        disabled: false
-      }))
-
-    this.setState({
-      currentQuestion,
-      answers
-    })
+    return currentQuestion
   }
 
   setCurrentAnswer (answer) {
@@ -129,15 +92,21 @@ class Game extends Component {
 
   render () {
     const {
-      currentQuestion: {
-        question,
-        correctAnswer
-      },
-      answers,
+      questions,
+      currentQuestionNumber,
       isGameFinished,
-      hasWon,
-      currentQuestionNumber
-    } = this.state
+      hasWon
+    } = this.props
+
+    if(!questions.length) {
+      return null
+    }
+
+    const {
+      question,
+      answers,
+      correctAnswer
+    } = this.generateQuestion()
 
     return isGameFinished
       ? (
@@ -176,4 +145,14 @@ Game.propTypes = {
   resetGame: PropTypes.func
 }
 
-export default Game
+const mapStateToProps = state => ({
+  nick: state.global.nick,
+  difficulty: state.global.difficulty,
+  gameStarted: state.global.gameStarted,
+  questions: state.game.questions,
+  currentQuestionNumber: state.game.currentQuestionNumber,
+  isGameFinished: state.global.isGameFinished,
+  hasWon: state.global.hasWon
+})
+
+export default connect(mapStateToProps, { resetGame, getQuestions })(Game)

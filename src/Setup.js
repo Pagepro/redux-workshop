@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setupApp } from './actions'
 
 class Setup extends Component {
   constructor (props) {
@@ -24,14 +26,10 @@ class Setup extends Component {
     }
   }
 
-  onSubmit (e) {
+  async onSubmit (e) {
     e.preventDefault()
 
     const {
-      props: {
-        setupApp,
-        history
-      },
       refs: {
         nickName: {
           value: nickNameVal
@@ -47,9 +45,8 @@ class Setup extends Component {
       return
     }
 
-    setupApp(nickNameVal, difficultyVal, () => {
-      history.push('/game')
-    })
+    await this.props.setupApp(nickNameVal, difficultyVal)
+    this.props.history.push('/game')
   }
 
   render () {
@@ -117,4 +114,8 @@ Setup.propTypes = {
   history: PropTypes.object
 }
 
-export default Setup
+const mapStateToProps = state => ({
+  gameStarted: state.global.gameStarted
+})
+
+export default connect(mapStateToProps, { setupApp })(Setup)

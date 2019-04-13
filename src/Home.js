@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import {
   Link
 } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { setGameStart } from './actions'
 
 const Home = props => {
   return (
@@ -10,7 +12,7 @@ const Home = props => {
       <Link
         className='c-start-link'
         to='/setup'
-        onClick={props.setGameStarted}
+        onClick={props.setGameStart}
         >
         Start
       </Link>
@@ -20,7 +22,7 @@ const Home = props => {
 }
 
 Home.propTypes = {
-  setGameStarted: PropTypes.func
+  setGameStart: PropTypes.func
 }
 
-export default Home
+export default connect(null, { setGameStart })(Home)
