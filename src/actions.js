@@ -2,7 +2,9 @@ import {
     SET_GAME_START,
     SETUP_APP,
     RESET_GAME,
-    GET_QUESTIONS
+    GET_QUESTIONS,
+    SET_GOOD_ANSWER,
+    SET_BAD_ANSWER
 } from './actionTypes'
 import { fetchQuestions } from './helpers'
 import { shuffle } from 'lodash'
@@ -55,7 +57,18 @@ const getQuestionsAction = data => ({
     payload: data
 })
 
+export const setAnswer = isGoodAnswer => dispatch => {
+    return isGoodAnswer ?
+        dispatch(setGoodAnswerAction()) : dispatch(setBadAnswerAction())
+}
 
+const setGoodAnswerAction = () => ({
+    type: SET_GOOD_ANSWER
+})
+
+const setBadAnswerAction = () => ({
+    type: SET_BAD_ANSWER
+})
 
 
 

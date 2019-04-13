@@ -3,7 +3,9 @@ import {
     SET_GAME_START,
     SETUP_APP,
     RESET_GAME,
-    GET_QUESTIONS
+    GET_QUESTIONS,
+    SET_BAD_ANSWER,
+    SET_GOOD_ANSWER
 } from './actionTypes'
 import thunk from 'redux-thunk'
 
@@ -42,6 +44,12 @@ const reducer = (state = defaultState, action) => {
         case RESET_GAME: {
             return defaultState
         }
+        case SET_BAD_ANSWER: {
+            return {
+                ...state,
+                isGameFinished: true
+            }
+        }
         default:
         return state
     }
@@ -54,6 +62,12 @@ const gameReducer = (state = gameDefaultState, action) => {
             return {
                 ...state,
                 questions: payload
+            }
+        }
+        case SET_GOOD_ANSWER: {
+            return {
+                ...state,
+                currentQuestionNumber: ++state.currentQuestionNumber
             }
         }
         default:

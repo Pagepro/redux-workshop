@@ -5,7 +5,7 @@ import Background from './Background'
 import SidePanel from './SidePanel'
 import EndScreen from './EndScreen'
 import { connect } from 'react-redux'
-import { resetGame, getQuestions } from './actions'
+import { resetGame, getQuestions, setAnswer } from './actions'
 
 class Game extends Component {
   constructor (props) {
@@ -45,7 +45,14 @@ class Game extends Component {
 
   setCurrentAnswer (answer) {
     return () => {
-      this.setState({ answer }, this.confirmCheckedAnswer)
+      const {
+        correctAnswer
+      } = this.generateQuestion()
+      const {
+        setAnswer
+      } = this.props
+
+      return answer === correctAnswer ? setAnswer(true) : setAnswer(false)
     }
   }
 
@@ -155,4 +162,4 @@ const mapStateToProps = state => ({
   hasWon: state.global.hasWon
 })
 
-export default connect(mapStateToProps, { resetGame, getQuestions })(Game)
+export default connect(mapStateToProps, { resetGame, getQuestions, setAnswer })(Game)
