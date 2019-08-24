@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 class Setup extends Component {
   constructor (props) {
@@ -117,4 +118,8 @@ Setup.propTypes = {
   history: PropTypes.object
 }
 
-export default Setup
+const mapStateToProps = state => ({
+  gameStarted: state.gameStarted
+})
+
+export default connect(mapStateToProps)(Setup)

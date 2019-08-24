@@ -23,7 +23,6 @@ class App extends React.Component {
 
     this.resetGame = this.resetGame.bind(this)
     this.setupApp = this.setupApp.bind(this)
-    this.setGameStarted = this.setGameStarted.bind(this)
   }
 
   setupApp (nick, difficulty, callback) {
@@ -31,12 +30,6 @@ class App extends React.Component {
       nick,
       difficulty
     }, callback)
-  }
-
-  setGameStarted () {
-    this.setState({
-      gameStarted: true
-    })
   }
 
   resetGame (callback) {
@@ -50,24 +43,12 @@ class App extends React.Component {
           <Route
             exact
             path='/'
-            component={() => (
-              <Home
-                setGameStarted={this.setGameStarted}
-              />
-            )}
+            component={Home}
           />
           <Route
             exact
             path='/setup'
-            render={
-              ({ history }) => (
-                <Setup
-                  setupApp={this.setupApp}
-                  gameStarted={this.state.gameStarted}
-                  history={history}
-                />
-              )
-            }
+            component={Setup}
           />
           <Route
             exact path='/game'
